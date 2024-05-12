@@ -1,19 +1,108 @@
 ﻿@page "/CyberCalculator"
-@rendermode InteractiveServer
+@using System.Security.Cryptography
+@using System.Text
+@using System.IO
 
-<PageTitle>Counter</PageTitle>
+<h3>Cyber Calculator - AES Encryption and Decryption</h3>
 
-<h1>Counter</h1>
+<div class="container">
+    <div class="input-group">
+        <label for="inputText">Enter Text:</label>
+        <input type="text" @bind="inputText" id="inputText" />
+    </div>
 
-<p role="status">Current count: @currentCount</p>
+    <div class="input-group">
+        <label for="key">Key (exactly 32 characters):</label>
+        <input type="text" @bind="key" id="key" maxlength="32" />
+    </div>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+    <div class="button-group">
+        <button @onclick="Encrypt">Encrypt</button>
+        <button @onclick="Decrypt">Decrypt</button>
+    </div>
+
+    @if (!string.IsNullOrEmpty(result))
+    {
+        <div class="result">
+            <p>Result: @result</p>
+        </div>
+    }
+
+    <div class="instructions">
+        <h4>Instructions</h4>
+        <p>Use a 32-character string for the key. Enter text and select encrypt or decrypt based on your needs.</p>
+    </div>
+</div>
 
 @code {
-    private int currentCount = 0;
+    private string inputText = "";
+    private string key = "";
+    private string result = "";
 
-    private void IncrementCount()
+    private void Encrypt()
     {
-        currentCount++;
+        result = Convert.ToBase64String(AesEncrypt(inputText, key));
+    }
+
+    private void Decrypt()
+    {
+        try
+        {
+            result = AesDecrypt(Convert.FromBase64String(inputText), key);
+        }
+        catch
+        {
+            result = "Invalid input or key!";
+        }
+    }
+
+    private static byte[] AesEncrypt(string input, string key)
+    {
+        using (Aes aesAlg = Aes.Create())
+        {
+            aesAlg.Key = AdjustKeyLength(key);
+            aesAlg.IV = new byte[16];
+            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+            using (MemoryStream msEncrypt = new MemoryStream())
+            {
+                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                {
+                    using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                    {
+                        swEncrypt.Write(input);
+                    }
+                }
+                return msEncrypt.ToArray();
+            }
+        }
+    }
+
+    private static string AesDecrypt(byte[] cipherText, string key)
+    {
+        using (Aes aesAlg = Aes.Create())
+        {
+            aesAlg.Key = AdjustKeyLength(key);
+            aesAlg.IV = new byte[16];
+            ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+            using (MemoryStream msDecrypt = new MemoryStream(cipherText))
+            {
+                using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                {
+                    using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                    {
+                        return srDecrypt.ReadToEnd();
+                    }
+                }
+            }
+        }
+    }
+
+    private static byte[] AdjustKeyLength(string key)
+    {
+        var keyBytes = Encoding.UTF8.GetBytes(key);
+        Array.Resize(ref keyBytes, 32); // Adjust key to 32 bytes for AES-256
+        return keyBytes;
     }
 }
