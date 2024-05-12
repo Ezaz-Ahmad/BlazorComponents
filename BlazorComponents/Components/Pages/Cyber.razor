@@ -1,64 +1,18 @@
-﻿@page "/Cyber"
-@attribute [StreamRendering]
+﻿@page "/cyber"
 
-<PageTitle>Weather</PageTitle>
+<h1 class="page-title">Latest Cybersecurity Insights</h1>
 
-<h1>Weather</h1>
-
-<p>This component demonstrates showing data.</p>
-
-@if (forecasts == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-
-@code {
-    private WeatherForecast[]? forecasts;
-
-    protected override async Task OnInitializedAsync()
-    {
-        // Simulate asynchronous loading to demonstrate streaming rendering
-        await Task.Delay(500);
-
-        var startDate = DateOnly.FromDateTime(DateTime.Now);
-        var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
-        forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        {
-            Date = startDate.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = summaries[Random.Shared.Next(summaries.Length)]
-        }).ToArray();
-    }
-
-    private class WeatherForecast
-    {
-        public DateOnly Date { get; set; }
-        public int TemperatureC { get; set; }
-        public string? Summary { get; set; }
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-    }
-}
+<div class="cyber-info">
+    <div class="section">
+        <h2>Ransomware Attacks</h2>
+        <p>Ransomware attacks are on the rise, encrypting victims' data and demanding ransom for decryption keys. Protecting against such attacks requires robust backup strategies, updated anti-malware tools, and employee training to recognize phishing attempts.</p>
+    </div>
+    <div class="section">
+        <h2>Phishing Scams</h2>
+        <p>Phishing scams trick users into providing sensitive information by mimicking legitimate requests. Strong email filters, user education, and two-factor authentication are critical defenses against these scams.</p>
+    </div>
+    <div class="section">
+        <h2>Data Breaches</h2>
+        <p>Data breaches involve unauthorized access to data. Implementing strict access controls, using encryption, and regularly updating software can help mitigate the risk of data breaches.</p>
+    </div>
+</div>

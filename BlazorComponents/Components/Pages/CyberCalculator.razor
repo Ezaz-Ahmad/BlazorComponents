@@ -102,7 +102,7 @@
     private static byte[] AdjustKeyLength(string key)
     {
         var keyBytes = Encoding.UTF8.GetBytes(key);
-        Array.Resize(ref keyBytes, 32); // Adjust key to 32 bytes for AES-256
+        Array.Resize(ref keyBytes, 32); 
         return keyBytes;
     }
 }

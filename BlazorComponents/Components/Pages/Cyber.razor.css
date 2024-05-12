@@ -1,0 +1,38 @@
+﻿.page-title {
+    text-align: center;
+    color: #0056b3;
+    margin: 20px 0;
+}
+
+.cyber-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+.section {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 300px; /* Fixed width for consistent sizing */
+}
+
+    .section h2 {
+        color: #007bff;
+    }
+
+    .section p {
+        font-size: 16px;
+        color: #343a40;
+    }
+
+@media (max-width: 768px) {
+    .cyber-info {
+        flex-direction: column;
+        align-items: center;
+    }
+}
